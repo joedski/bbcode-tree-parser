@@ -54,7 +54,7 @@ function treeOf( parser, options, contents ) {
 				// error.token = current;
 				// error.location = current.location;
 				// throw error;
-				return handleOrphanedTagClose();
+				return handleOrphanedTagClose( current );
 		}
 	}
 
