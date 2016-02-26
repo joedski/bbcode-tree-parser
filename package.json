@@ -1,0 +1,28 @@
+{
+  "name": "bbcode-tree-parser",
+  "version": "0.0.0",
+  "description": "Not so frilly BBCode Parser to generate parse trees.",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublish": "npm run build:dist",
+    "build:dist": "node build dist",
+    "build:browser": "node build browser",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bbcode",
+    "parser",
+    "pegjs"
+  ],
+  "author": "Joseph Sikorski <joedski@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "object-assign": "^4.0.1"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.0",
+    "commander": "^2.9.0",
+    "exorcist": "^0.4.0",
+    "pegjs": "^0.9.0"
+  }
+}
