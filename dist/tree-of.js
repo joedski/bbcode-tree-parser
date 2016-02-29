@@ -41,7 +41,8 @@ function treeOf( parser, options, contents ) {
 				// Probably not a good idea, but oh well.
 				if( isParentPresentForTagClose( current ) ) {
 					while( currentParent() && currentParent().tagName !== current.tagName ) {
-						closeAndPop();
+						// closeAndPop();
+						handleUnclosedTagOpen( current );
 					}
 
 					closeAndPop( current );
@@ -127,6 +128,8 @@ function treeOf( parser, options, contents ) {
 	}
 
 	function handleOrphanedTagClose( tagClose ) {
+		var error;
+
 		switch( options.orphanedTagCloseBehavior ) {
 			default:
 			case 'throw':
@@ -135,6 +138,7 @@ function treeOf( parser, options, contents ) {
 					tagClose.tagName +
 					"]' encountered"
 				);
+				error.type = 'orphanedTagClose';
 				error.token = tagClose;
 				error.location = tagClose.location;
 				throw error;
@@ -150,6 +154,38 @@ function treeOf( parser, options, contents ) {
 			case 'ignore':
 				return;
 		}
+	}
 
+	function handleUnclosedTagOpen( token ) {
+		var error;
+		var parent = currentParent();
+		var parentTagOpen = parent.tagOpen;
+
+		switch( options.unclosedTagOpenBehavior ) {
+			default:
+			case 'ignore':
+				closeAndPop();
+				return;
+
+			case 'throw':
+				// serial auto-closing tags (such as [li]/[*] by default) do not require a closing tag.
+				if( isSerialAutoClosingTag( parent.tagname ) ) {
+					closeAndPop();
+					return;
+				}
+
+				error = new Error(
+					"Unclosed [" + parent.tagName +
+					"] tag; expected [/" + parent.tagName +
+					"] at line " + String( token.location.start.line ) +
+					", column " + String( token.location.start.column ) + ";" +
+					" Instead found [/" + token.tagName + "]"
+				);
+				error.type = 'unclosedTagOpen';
+				error.token = token;
+				error.location = token.location;
+				error.parentToken = parent.tagOpen;
+				throw error;
+		}
 	}
 }

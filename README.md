@@ -44,6 +44,10 @@ The `parse` function accepts an optional options object.  It can have the follow
 	- `"throw"` means to throw an error when such a tag is encountered.
 	- `"text"` means to convert the tag into a text node and emit that as normal.
 	- `"ignore"` means to just silently drop the tag.
+- `unclosedTagOpenBehavior: string` What to do when a child tag is not closed before a parent tag, or perhaps never closed at all.
+	- Default: `"ignore"`
+	- `"ignore"` Unclosed tags are just closed.  Note that such tags will lack a `tagClose` value, and their `location` property will be set based on where their content ends.
+	- `"throw"` Unclosed tags generate an error.  Note that this option also uses the value of `serialAutoClosingTags` to judge whether it should ignore certain tags being unclosed.  Set that to an empty list to catch all tags.
 
 
 
